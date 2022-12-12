@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:money_app/db_function/user_name_db.dart';
 
 class About extends StatefulWidget {
@@ -22,7 +23,7 @@ class _AboutState extends State<About> with TickerProviderStateMixin {
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -123,7 +124,7 @@ class _AboutState extends State<About> with TickerProviderStateMixin {
                               child: ListView(
                                 children: const [
                                   Text(
-                                    'There are some features that you may not know.\n\n\n\n1. Tap on the app icons to navigate to About.\n\n2. Click on your name in HomePage to edit your name.\n\n3. Tap on the transaction to edit (on HomePage & Search Screen)\n\n4. Slide to left or right to edit and delete (on Second Page).',
+                                    'There are some features that you may not know.\n\n\n\n1. Tap on See all category to navigate to Category page.\n\n2. Click on your name in HomePage to edit your name.\n\n3. Tap on the Plus button to add transactions.\n\n4. Slide to left or right to edit and delete (on Second Page).\n\n5. Click the Restart App button to restart the app (on Fourth Page)',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 17,

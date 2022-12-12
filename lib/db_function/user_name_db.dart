@@ -7,7 +7,7 @@ const userNameDBName = 'userNameDB';
 abstract class UserNameDBFunction {
   Future<void> addName(UserNameModel value);
   // Future<List<UserNameModel>> getUserName();
-  Future<void> updateName(int id, UserNameModel value);
+  Future<void> updateName(UserNameModel value);
   Future<void> restratUserName();
 }
 
@@ -32,9 +32,9 @@ class UserNameDB implements UserNameDBFunction {
   }
 
   @override
-  Future<void> updateName(int id, UserNameModel value) async {
+  Future<void> updateName(UserNameModel value) async {
     final userNameDB = await Hive.openBox<UserNameModel>(userNameDBName);
-    userNameDB.putAt(id, value);
+    userNameDB.put(value.id, value);
     getUserName();
   }
 

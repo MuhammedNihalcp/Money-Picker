@@ -1,4 +1,5 @@
-import 'package:money_app/db_function/filteration_db.dart';
+import 'package:get/get.dart';
+import 'package:money_app/controller/filltretion_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:money_app/db_function/chart_db.dart';
@@ -12,28 +13,44 @@ class Graphs extends StatefulWidget {
 }
 
 class _GraphsState extends State<Graphs> with TickerProviderStateMixin {
-  List<ChartDatas> dataExpense = chartLogic(expenseNotifier.value);
-  List<ChartDatas> dataIncome = chartLogic(incomeNotifier.value);
-  List<ChartDatas> overview = chartLogic(overviewNotifier.value);
-  List<ChartDatas> yesterday = chartLogic(yesterdayNotifier.value);
-  List<ChartDatas> today = chartLogic(todayNotifier.value);
-  List<ChartDatas> month = chartLogic(lastMonthNotifier.value);
-  List<ChartDatas> week = chartLogic(lastWeekNotifier.value);
-  List<ChartDatas> todayIncome = chartLogic(incomeTodayNotifier.value);
-  List<ChartDatas> incomeYesterday = chartLogic(incomeYesterdayNotifier.value);
-  List<ChartDatas> incomeweek = chartLogic(incomeLastWeekNotifier.value);
-  List<ChartDatas> incomemonth = chartLogic(incomeLastMonthNotifier.value);
-  List<ChartDatas> todayExpense = chartLogic(expenseTodayNotifier.value);
+  List<ChartDatas> dataExpense =
+      chartLogic(FiltretionController.instance.expenseNotifier);
+  List<ChartDatas> dataIncome =
+      chartLogic(FiltretionController.instance.incomeNotifier);
+  List<ChartDatas> overview =
+      chartLogic(FiltretionController.instance.overviewNotifier);
+  List<ChartDatas> yesterday =
+      chartLogic(FiltretionController.instance.yesterdayNotifier);
+  List<ChartDatas> today =
+      chartLogic(FiltretionController.instance.todayNotifier);
+  List<ChartDatas> month =
+      chartLogic(FiltretionController.instance.lastMonthNotifier);
+  List<ChartDatas> week =
+      chartLogic(FiltretionController.instance.lastWeekNotifier);
+  List<ChartDatas> todayIncome =
+      chartLogic(FiltretionController.instance.incomeTodayNotifier);
+  List<ChartDatas> incomeYesterday =
+      chartLogic(FiltretionController.instance.incomeYesterdayNotifier);
+  List<ChartDatas> incomeweek =
+      chartLogic(FiltretionController.instance.incomeLastWeekNotifier);
+  List<ChartDatas> incomemonth =
+      chartLogic(FiltretionController.instance.incomeLastMonthNotifier);
+  List<ChartDatas> todayExpense =
+      chartLogic(FiltretionController.instance.expenseTodayNotifier);
   List<ChartDatas> expenseYesterday =
-      chartLogic(expenseYesterdayNotifier.value);
-  List<ChartDatas> expenseweek = chartLogic(expenseLastWeekNotifier.value);
-  List<ChartDatas> expensemonth = chartLogic(expenseLastMonthNotifier.value);
+      chartLogic(FiltretionController.instance.expenseYesterdayNotifier);
+  List<ChartDatas> expenseweek =
+      chartLogic(FiltretionController.instance.expenseLastWeekNotifier);
+  List<ChartDatas> expensemonth =
+      chartLogic(FiltretionController.instance.expenseLastMonthNotifier);
   late TabController tabController;
+
+  final FiltretionController fC = Get.put(FiltretionController());
 
   @override
   void initState() {
     tabController = TabController(length: 3, vsync: this);
-    filterFunction();
+    fC.filterControllerFunction();
     chartdivertFunctionExpense();
     chartdivertFunctionIncome();
     super.initState();

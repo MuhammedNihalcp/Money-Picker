@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:money_app/db_function/catagory_db.dart';
+import 'package:get/get.dart';
+import 'package:money_app/controller/category_controller.dart';
+
 import 'package:money_app/model/catagory_data_model.dart';
 
 ValueNotifier<CategoryType> selectedCategoryNotifier =
@@ -8,6 +12,8 @@ ValueNotifier<CategoryType> selectedCategoryNotifier =
 Future<void> showCategoryAddPopup(BuildContext context) async {
   final nameController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  final categoryController = Get.put(CategoryController());
   showDialog(
     context: context,
     builder: (ctx) {
@@ -83,9 +89,9 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
                     name: name,
                     type: type,
                   );
-                  CategoryDB.instance.insertCategory(category);
-                  CategoryDB.instance.refreshUI();
-                  Navigator.of(ctx).pop();
+                  categoryController.addCategory(category);
+                  categoryController.refreshCategory();
+                  Get.back();
                 }
               },
               child: const Text(

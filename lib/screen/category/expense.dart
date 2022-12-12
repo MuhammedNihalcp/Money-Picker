@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_cards/flutter_custom_cards.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:money_app/db_function/catagory_db.dart';
-import 'package:money_app/model/catagory_data_model.dart';
+import 'package:money_app/controller/category_controller.dart';
 import 'package:money_app/screen/category/category_delete_popup.dart';
 
+final CategoryDelete cD = CategoryDelete();
+
 class ExpenceCatagoryList extends StatelessWidget {
-  const ExpenceCatagoryList({super.key});
+  ExpenceCatagoryList({super.key});
+  final categoryController = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return ValueListenableBuilder(
-      valueListenable: CategoryDB().expenseCategoryNotifier,
-      builder: (BuildContext ctx, List<CatagoryModel> expenceCategoryList,
-          Widget? _) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+    return GetBuilder<CategoryController>(
+      builder: (controller) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Expanded(
             child: CustomCard(
               width: width,
-              height:  height * 0.6,
+              height: height * 0.6,
               borderRadius: 20,
               elevation: 0,
               color: const Color.fromARGB(222, 206, 205, 205),
-              child: expenceCategoryList.isEmpty
+              child: categoryController.expenseCategory.isEmpty
                   ? Stack(
                       children: [
                         Center(
@@ -55,7 +56,8 @@ class ExpenceCatagoryList extends StatelessWidget {
                         crossAxisSpacing: 10,
                       ),
                       itemBuilder: (ctx, index) {
-                        final categoryData = expenceCategoryList[index];
+                        final categoryData =
+                            categoryController.expenseCategory[index];
                         return ListTile(
                           leading: Text(
                             categoryData.name,
@@ -66,7 +68,7 @@ class ExpenceCatagoryList extends StatelessWidget {
                           ),
                           trailing: IconButton(
                             onPressed: () {
-                              showCategoryDelete(context, categoryData);
+                              cD.showCategoryDelete(context, categoryData);
                             },
                             icon: const Icon(
                               Icons.delete,
@@ -76,7 +78,7 @@ class ExpenceCatagoryList extends StatelessWidget {
                           ),
                         );
                       },
-                      itemCount: expenceCategoryList.length),
+                      itemCount: categoryController.expenseCategory.length),
             ),
           ),
         );

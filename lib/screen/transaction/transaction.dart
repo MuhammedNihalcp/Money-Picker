@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_cards/flutter_custom_cards.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:money_app/db_function/filteration_db.dart';
+import 'package:money_app/controller/transaction_controller.dart';
 
 import 'package:money_app/db_function/transaction_db.dart';
 import 'package:money_app/model/catagory_data_model.dart';
@@ -16,14 +17,13 @@ import 'package:money_app/screen/transaction/transaction_filters.dart';
 import '../../model/transaction_data_model.dart';
 
 class ScreenTransaction extends StatelessWidget {
-  const ScreenTransaction({super.key});
+  ScreenTransaction({super.key});
+  final transactionController = Get.put(TransactionController());
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double widht = MediaQuery.of(context).size.width;
-    // TransactionDB.instance.transactionPickDate(context);
-    filterFunction();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -47,59 +47,55 @@ class ScreenTransaction extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding:  EdgeInsets.all(height * 0.01),
-          child: Column(
-            children: [
-              TextButton.icon(
-                style: ButtonStyle(
-                  alignment: Alignment.centerLeft,
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromARGB(255, 229, 225, 225)),
-                  fixedSize: MaterialStateProperty.all(const Size(330, 40)),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                      side: const BorderSide(color: Colors.green),
+      body: GetBuilder<TransactionController>(
+        builder: (controller) {
+          return Padding(
+            padding: EdgeInsets.all(height * 0.01),
+            child: Column(
+              children: [
+                TextButton.icon(
+                  style: ButtonStyle(
+                    alignment: Alignment.centerLeft,
+                    backgroundColor: MaterialStateProperty.all(
+                        const Color.fromARGB(255, 229, 225, 225)),
+                    fixedSize: MaterialStateProperty.all(const Size(330, 40)),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        side: const BorderSide(color: Colors.green),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    showSearch(
+                        context: context, delegate: CustomSerchDelegate());
+                  },
+                  icon: const Icon(
+                    Icons.search,
+                    color: Colors.black,
+                  ),
+                  label: const Text(
+                    '  Search Items',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
                     ),
                   ),
                 ),
-                onPressed: () {
-                  showSearch(context: context, delegate: CustomSerchDelegate());
-                },
-                icon: const Icon(
-                  Icons.search,
-                  color: Colors.black,
+                SizedBox(
+                  height: height * 0.01,
                 ),
-                label: const Text(
-                  '  Search Items',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                const TransactionFilterBar(),
+                SizedBox(
+                  height: height * 0.02,
                 ),
-              ),
-               SizedBox(
-                height: height * 0.01,
-              ),
-              const TransactionFilterBar(),
-               SizedBox(
-                height: height * 0.02,
-              ),
-              CustomCard(
-                elevation: 0,
-                color: const Color.fromARGB(255, 216, 212, 212),
-                width: widht * 0.92,
-                height: height * 0.56,
-                borderRadius: 20,
-                child: ValueListenableBuilder(
-                  valueListenable:
-                      TransactionDB.instance.transactionListNotifier,
-                  builder: (BuildContext ctx,
-                      List<TransactionModel> transactionList, Widget? _) {
-                    return TransactionDB
-                            .instance.transactionListNotifier.value.isEmpty
+                Expanded(
+                  child: CustomCard(
+                    elevation: 0,
+                    color: const Color.fromARGB(255, 216, 212, 212),
+                    width: widht * 0.92,
+                    borderRadius: 20,
+                    child: transactionController.filterList.isEmpty
                         ? Stack(
                             children: [
                               Center(
@@ -122,7 +118,8 @@ class ScreenTransaction extends StatelessWidget {
                           )
                         : ListView.separated(
                             itemBuilder: (ctx, index) {
-                              final data = transactionList[index];
+                              final data =
+                                  transactionController.filterList[index];
                               return Slidable(
                                 startActionPane: ActionPane(
                                     motion: const DrawerMotion(),
@@ -131,7 +128,8 @@ class ScreenTransaction extends StatelessWidget {
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.black,
                                         onPressed: (ctx) {
-                                          showTransactionDelete(context, data);
+                                          tD.showTransactionDelete(
+                                              context, data);
                                         },
                                         icon: Icons.delete,
                                         label: 'delete',
@@ -143,15 +141,13 @@ class ScreenTransaction extends StatelessWidget {
                                       SlidableAction(
                                         backgroundColor: Colors.transparent,
                                         onPressed: (ctx) {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (ctx) => ScreenEdit(
-                                                amount: data.amount,
-                                                catagory: data.catagory,
-                                                date: data.date,
-                                                type: data.type,
-                                                index: index,
-                                              ),
+                                          Get.to(
+                                            () => ScreenEdit(
+                                              amount: data.amount,
+                                              catagory: data.catagory,
+                                              date: data.date,
+                                              type: data.type,
+                                              index: index,
                                             ),
                                           );
                                         },
@@ -185,8 +181,11 @@ class ScreenTransaction extends StatelessWidget {
                                       ),
                                     ),
                                     trailing: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
                                       child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -199,7 +198,7 @@ class ScreenTransaction extends StatelessWidget {
                                                   : Colors.red,
                                             ),
                                           ),
-                                           SizedBox(
+                                          SizedBox(
                                             height: height * 0.01,
                                           ),
                                           Text(parseDate(data.date))
@@ -211,17 +210,17 @@ class ScreenTransaction extends StatelessWidget {
                               );
                             },
                             separatorBuilder: (ctx, index) {
-                              return  SizedBox(
+                              return SizedBox(
                                 height: height * 0.02,
                               );
                             },
-                            itemCount: transactionList.length);
-                  },
+                            itemCount: transactionController.filterList.length),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

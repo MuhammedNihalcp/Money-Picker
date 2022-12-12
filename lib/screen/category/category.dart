@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:money_app/db_function/catagory_db.dart';
+import 'package:get/get.dart';
+import 'package:money_app/controller/category_controller.dart';
+
 import 'package:money_app/screen/category/category_popup.dart';
 import 'package:money_app/screen/category/expense.dart';
 import 'package:money_app/screen/category/income.dart';
@@ -14,11 +16,12 @@ class ScreenCategory extends StatefulWidget {
 class _ScreenCategoryState extends State<ScreenCategory>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  final categoryController = Get.put(CategoryController());
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
-    CategoryDB().refreshUI();
+    categoryController.refreshCategory();
     super.initState();
   }
 
@@ -33,7 +36,7 @@ class _ScreenCategoryState extends State<ScreenCategory>
           automaticallyImplyLeading: false,
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -63,7 +66,7 @@ class _ScreenCategoryState extends State<ScreenCategory>
             height: height * 0.04,
           ),
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: height * 0.03),
+            padding: EdgeInsets.symmetric(horizontal: height * 0.03),
             child: TabBar(
                 indicator: BoxDecoration(
                     color: Colors.green,
@@ -85,7 +88,7 @@ class _ScreenCategoryState extends State<ScreenCategory>
             height: height * 0.04,
           ),
           Expanded(
-            child: TabBarView(controller: _tabController, children: const [
+            child: TabBarView(controller: _tabController, children: [
               IncomeCategoryList(),
               ExpenceCatagoryList(),
             ]),
@@ -107,7 +110,6 @@ class _ScreenCategoryState extends State<ScreenCategory>
               color: Colors.black,
             ),
           ),
-          
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

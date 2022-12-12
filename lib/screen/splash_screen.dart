@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:money_app/db_function/filteration_db.dart';
+import 'package:get/get.dart';
 import 'package:money_app/db_function/transaction_db.dart';
 import 'package:money_app/db_function/user_name_db.dart';
 import 'package:money_app/main.dart';
 import 'package:money_app/screen/navigator.dart';
 import 'package:money_app/screen/start_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../controller/transaction_controller.dart';
 
 class ScreenSplash extends StatefulWidget {
   const ScreenSplash({super.key});
@@ -15,9 +17,12 @@ class ScreenSplash extends StatefulWidget {
 }
 
 class _ScreenSplashState extends State<ScreenSplash> {
+  final transactionController = Get.put(TransactionController());
   @override
   void initState() {
     checkRegister(context);
+    transactionController.refreshTransactionHome();
+    UserNameDB.instance.getUserName();
     super.initState();
   }
 
@@ -47,9 +52,9 @@ class _ScreenSplashState extends State<ScreenSplash> {
               height: 80,
             ),
             SizedBox(
-              height: height * 0.4,
+              height: height * 0.35,
             ),
-            const Text('version 1.0.0')
+            const Text('version 1.0.0'),
           ],
         ),
       ),
@@ -58,11 +63,8 @@ class _ScreenSplashState extends State<ScreenSplash> {
 
   Future<void> goToGetPage() async {
     await Future.delayed(const Duration(seconds: 3));
-    if (!mounted) {
-      return;
-    }
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (ctx) => const GetScreen()));
+
+    Get.off(() => const GetScreen());
   }
 
   Future<void> checkRegister(BuildContext context) async {
@@ -72,14 +74,10 @@ class _ScreenSplashState extends State<ScreenSplash> {
       goToGetPage();
     } else {
       await Future.delayed(const Duration(seconds: 3));
-      if (!mounted) {
-        return;
-      }
+
       UserNameDB.instance.getUserName();
-      filterFunction();
-      
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const ScreenNavigator()));
+
+      Get.off(() => const ScreenNavigator());
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:money_app/db_function/transaction_db.dart';
+import 'package:get/get.dart';
+import 'package:money_app/controller/transaction_controller.dart';
 
 class TransactionFilterBar extends StatefulWidget {
   const TransactionFilterBar({super.key});
@@ -26,6 +26,7 @@ class _TransactionFilterBarState extends State<TransactionFilterBar> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return SizedBox(
       height: 40,
       width: double.infinity,
@@ -53,7 +54,7 @@ class _TransactionFilterBarState extends State<TransactionFilterBar> {
                         shape: const RoundedRectangleBorder(),
                         elevation: selFilterIndex == index ? 0 : 2,
                         child: Container(
-                          constraints: const BoxConstraints(minWidth: 100),
+                          constraints: BoxConstraints(minWidth: width * 0.27),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Align(
                             alignment: Alignment.center,
@@ -78,28 +79,29 @@ class _TransactionFilterBarState extends State<TransactionFilterBar> {
   }
 
   setFilter(var selction) async {
+    final TransactionController transactionCT = Get.find();
     final DateTime now = DateTime.now();
     switch (selction) {
       case 'All':
-        TransactionDB.instance.clearFilter();
+        transactionCT.clearFilter();
         break;
       case 'Today':
         DateTime start = DateTime(now.year, now.month, now.day);
         DateTime end = start.add(const Duration(days: 1));
-        TransactionDB.instance.setFilter(start, end);
+        transactionCT.setFilter(start, end);
         break;
       case 'Yesterday':
         DateTime start = DateTime(now.year, now.month, now.day - 1);
         DateTime end = start.add(const Duration(days: 1));
-        TransactionDB.instance.setFilter(start, end);
+        transactionCT.setFilter(start, end);
         break;
       case 'Week':
         DateTime start = DateTime(now.year, now.month, now.day - 6);
         DateTime end = DateTime(start.year, start.month, start.day + 7);
-        TransactionDB.instance.setFilter(start, end);
+        transactionCT.setFilter(start, end);
         break;
       case 'Month':
-        TransactionDB.instance.transactionPickDate(context);
+        transactionCT.transactionPickDate(context);
         break;
 
       default:

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-import 'package:money_app/db_function/catagory_db.dart';
-import 'package:money_app/db_function/filteration_db.dart';
-import 'package:money_app/db_function/transaction_db.dart';
-
+import 'package:money_app/controller/category_controller.dart';
+import 'package:money_app/controller/transaction_controller.dart';
 import 'package:money_app/model/catagory_data_model.dart';
 import 'package:money_app/model/transaction_data_model.dart';
+
+import '../../controller/filltretion_controller.dart';
 
 // ignore: must_be_immutable
 class ScreenEdit extends StatefulWidget {
@@ -37,6 +37,9 @@ class _ScreenEditState extends State<ScreenEdit> {
   late int categoryIndex;
   String? categoryID;
   final formKey = GlobalKey<FormState>();
+  final TransactionController transactionCT = Get.put(TransactionController());
+  final FiltretionController filtretionCT = Get.put(FiltretionController());
+  final CategoryController categoryCT = Get.put(CategoryController());
 
   @override
   void initState() {
@@ -246,9 +249,8 @@ class _ScreenEditState extends State<ScreenEdit> {
                               }
                             },
                             items: (selectedCategoryType == CategoryType.income
-                                    ? CategoryDB().incomeCategoryNotifier
-                                    : CategoryDB().expenseCategoryNotifier)
-                                .value
+                                    ? categoryCT.incomeCategory
+                                    : categoryCT.expenseCategory)
                                 .map((e) {
                               return DropdownMenuItem(
                                 value: e.id,
@@ -351,14 +353,6 @@ class _ScreenEditState extends State<ScreenEdit> {
   }
 
   void save(ctx) async {
-    // ScaffoldMessenger.of(ctx).showSnackBar(
-    //   const SnackBar(
-    //     backgroundColor: Colors.green,
-    //     behavior: SnackBarBehavior.floating,
-    //     duration: Duration(seconds: 2),
-    //     content: Text('Saving Your Trasaction'),
-    //   ),
-    // );
     await Future.delayed(
       const Duration(seconds: 2),
     );
@@ -375,21 +369,21 @@ class _ScreenEditState extends State<ScreenEdit> {
       amount: parsedAmount,
     );
 
-    TransactionDB.instance.updateTransaction(widget.index, transactionModel);
-    if (!mounted) {
-      return;
-    }
-    filterFunction();
-    
-    Navigator.of(context).pop();
-    TransactionDB.instance.refresh();
-    TransactionDB.instance.refreshHome();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(10),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 5),
-        content: Text("Transaction update succefully  ✓")));
+    transactionCT.updateTransaction(widget.index, transactionModel);
+
+    filtretionCT.filterControllerFunction();
+    Get.back();
+    transactionCT.refreshTransaction();
+    transactionCT.refreshTransactionHome();
+
+    Get.snackbar(
+      '',
+      'Transaction update succefully  ✓',
+      backgroundColor: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+      colorText: Colors.green,
+      margin: const EdgeInsets.all(10),
+    );
   }
 
   String parseDate(DateTime date) {

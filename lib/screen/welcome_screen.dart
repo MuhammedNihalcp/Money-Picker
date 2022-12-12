@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:money_app/db_function/filteration_db.dart';
 import 'package:money_app/db_function/transaction_db.dart';
 import 'package:money_app/db_function/user_name_db.dart';
@@ -6,7 +7,6 @@ import 'package:money_app/main.dart';
 import 'package:money_app/model/user_name_data_model.dart';
 import 'package:money_app/screen/navigator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class ScreenWelcome extends StatefulWidget {
   const ScreenWelcome({super.key});
@@ -18,17 +18,15 @@ class ScreenWelcome extends StatefulWidget {
 class _ScreenWelcomeState extends State<ScreenWelcome> {
   final _formKey = GlobalKey<FormState>();
 
-  final _fristNameController = TextEditingController();
-
-  final _lastNameController = TextEditingController();
+  final _fullNameController = TextEditingController();
   @override
   void initState() {
     filterFunction();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-   
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -75,56 +73,14 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                   SizedBox(
                     height: height * 0.01,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: height * 0.02),
-                    child: TextFormField(
-                      controller: _fristNameController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'User name should not be embty';
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Frist Name',
-                        hintStyle: const TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                        ),
-                        filled: true,
-                        fillColor: const Color.fromARGB(195, 255, 255, 255),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100),
-                          borderSide: const BorderSide(
-                            color: Colors.green,
-                            width: 2.0,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100),
-                          borderSide: const BorderSide(
-                            color: Color.fromARGB(195, 255, 255, 255),
-                            width: 2.0,
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 2.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(
                     height: height * 0.025,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: height * 0.02),
                     child: TextFormField(
-                      controller: _lastNameController,
+                      keyboardType: TextInputType.name,
+                      controller: _fullNameController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Full name should not be empty';
@@ -133,7 +89,7 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                         }
                       },
                       decoration: InputDecoration(
-                        hintText: 'Last name',
+                        hintText: 'Enter Full name',
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
@@ -161,11 +117,18 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                             width: 2.0,
                           ),
                         ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                          borderSide: const BorderSide(
+                            color: Colors.green,
+                            width: 2.0,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: height * 0.045,
+                    height: height * 0.085,
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -196,9 +159,8 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
   }
 
   Future<void> checkToRegistor(BuildContext context) async {
-    final fristname = _fristNameController.text.trim();
-    final lastname = _lastNameController.text.trim();
-    if (fristname.isNotEmpty || lastname.isNotEmpty) {
+    final fullname = _fullNameController.text.trim();
+    if (fullname.isNotEmpty) {
       final sharedPrefs = await SharedPreferences.getInstance();
       sharedPrefs.setBool(saveKeyValue, true);
 
@@ -206,14 +168,13 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
         return;
       }
       final userModel = UserNameModel(
-        username: lastname,
+        username: fullname,
       );
       UserNameDB.instance.addName(userModel);
       UserNameDB.instance.getUserName();
       TransactionDB.instance.transactionhomeListNotifier;
       filterFunction();
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const ScreenNavigator()));
+      Get.off(() => const ScreenNavigator());
     } else {}
   }
 }

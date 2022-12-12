@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:money_app/controller/category_controller.dart';
+import 'package:money_app/controller/filltretion_controller.dart';
+
+import 'package:money_app/controller/transaction_controller.dart';
 import 'package:money_app/db_function/catagory_db.dart';
-import 'package:money_app/db_function/filteration_db.dart';
-import 'package:money_app/db_function/transaction_db.dart';
+
 import 'package:money_app/model/catagory_data_model.dart';
 import 'package:money_app/model/transaction_data_model.dart';
 import 'package:money_app/screen/category/category.dart';
@@ -22,11 +26,16 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
   String? categoryID;
   final TextEditingController amountEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final TransactionController transactionCT = Get.find();
+  final transactionController = Get.put(TransactionController());
+  final categoryController = Get.put(CategoryController());
+  final filtertionController = Get.put(FiltretionController());
+  // final FiltretionController filtretionCT = Get.find();
 
   @override
   void initState() {
     selectedCategoryType = CategoryType.income;
-    CategoryDB.instance.refreshUI();
+    categoryController.refreshCategory();
     super.initState();
   }
 
@@ -42,7 +51,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
         child: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -185,9 +194,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (ctx) =>
-                                          const ScreenCategory()));
+                                  Get.to(() => const ScreenCategory());
                                 },
                                 icon: const Icon(
                                   Icons.add_circle_outline,
@@ -247,9 +254,8 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                               }
                             },
                             items: (selectedCategoryType == CategoryType.income
-                                    ? CategoryDB().incomeCategoryNotifier
-                                    : CategoryDB().expenseCategoryNotifier)
-                                .value
+                                    ? categoryController.incomeCategory
+                                    : categoryController.expenseCategory)
                                 .map((e) {
                               return DropdownMenuItem(
                                 value: e.id,
@@ -333,33 +339,13 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                             if (formKey.currentState!.validate()) {
                               transactionAdd();
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: const EdgeInsets.all(10),
-                                  backgroundColor: Colors.white,
-                                  duration: const Duration(seconds: 5),
-                                  content: Row(
-                                    children: const [
-                                      Text(
-                                        "Warning:",
-                                        style: TextStyle(
-                                            color: Colors.red, fontSize: 19),
-                                      ),
-                                      Text(
-                                        ' Form is Empty',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        ' !!!',
-                                        style: TextStyle(
-                                            color: Colors.red, fontSize: 19),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                              Get.snackbar(
+                                'Error',
+                                'Warning: Form is Empty !!!',
+                                backgroundColor: Colors.white,
+                                colorText: Colors.black,
+                                snackPosition: SnackPosition.BOTTOM,
+                                margin: const EdgeInsets.all(10),
                               );
                             }
                           },
@@ -400,25 +386,20 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
       date: selectedDate!,
       amount: parsedAmount,
     );
-    TransactionDB.instance.addTransaction(model);
+    transactionController.addTransaction(model);
+    filtertionController.filterControllerFunction();
+    Get.to(() => const ScreenNavigator());
+    // filtretionCT.filterControllerFunction();
+    transactionController.refreshTransaction();
+    transactionController.refreshTransactionHome();
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (ctx) => const ScreenNavigator(),
-      ),
-    );
-
-    filterFunction();
-    TransactionDB.instance.refresh();
-    TransactionDB.instance.refreshHome();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(10),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 5),
-        content: Text("Transaction added succefully  ✓"),
-      ),
+    Get.snackbar(
+      '',
+      'Transaction added succefully ✓',
+      backgroundColor: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+      colorText: Colors.green,
+      margin: const EdgeInsets.all(10),
     );
   }
 

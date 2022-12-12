@@ -14,9 +14,6 @@ abstract class TransactionDbFuntion {
 }
 
 class TransactionDB implements TransactionDbFuntion {
-  double totalBalance = 0.0;
-  double totalIncome = 0.0;
-  double totalExpense = 0.0;
   late List<TransactionModel> filterList;
   late List<TransactionModel> list;
   late List<TransactionModel> homeList;

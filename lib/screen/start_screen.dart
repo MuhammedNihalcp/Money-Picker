@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:money_app/screen/welcome_screen.dart';
 
 class GetScreen extends StatelessWidget {
@@ -29,8 +30,7 @@ class GetScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10)),
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (ctx) =>const ScreenWelcome()));
+                      Get.off(() => const ScreenWelcome());
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 18.0),
@@ -40,7 +40,7 @@ class GetScreen extends StatelessWidget {
                       ),
                     )),
               ),
-               SizedBox(
+              SizedBox(
                 height: height * 0.04,
               )
             ],
