@@ -164,7 +164,7 @@ class _ScreenSettingsState extends State<ScreenSettings> {
                               onPressed: () {
                                 feedback();
                               },
-                              icon: const Icon(Icons.restart_alt_outlined),
+                              icon: const Icon(Icons.feedback_outlined),
                             ),
                             TextButton(
                               onPressed: () {

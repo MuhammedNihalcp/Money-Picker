@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_cards/flutter_custom_cards.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -34,6 +36,8 @@ class _ScreenHomeState extends State<ScreenHome> {
     UserNameDB.instance.getUserName();
     filterCT.filterControllerFunction();
     getBalance();
+    UserNameDB.instance.userNameNotifier.value;
+    log(UserNameDB.instance.userNameNotifier.value.toString());
     super.initState();
   }
 
@@ -80,6 +84,8 @@ class _ScreenHomeState extends State<ScreenHome> {
       body: GetBuilder<TransactionController>(
         builder: (controller) {
           getBalance();
+          UserNameDB.instance.getUserName();
+          UserNameDB.instance.userNameNotifier.value;
           return Container(
             width: double.infinity,
             decoration: const BoxDecoration(

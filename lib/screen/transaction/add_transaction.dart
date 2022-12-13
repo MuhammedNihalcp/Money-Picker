@@ -183,7 +183,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
                             ),
                             label: Text(
                               selectedDate == null
-                                  ? 'Select Date'
+                                  ? parseDate(DateTime.now())
                                   : parseDate(selectedDate!),
                               style: const TextStyle(color: Colors.black),
                             )),
@@ -388,7 +388,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
     );
     transactionController.addTransaction(model);
     filtertionController.filterControllerFunction();
-    Get.to(() => const ScreenNavigator());
+    Get.offAll(() => const ScreenNavigator());
     // filtretionCT.filterControllerFunction();
     transactionController.refreshTransaction();
     transactionController.refreshTransactionHome();

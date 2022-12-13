@@ -85,7 +85,7 @@ class _ScreenCategoryState extends State<ScreenCategory>
                 ]),
           ),
           SizedBox(
-            height: height * 0.04,
+            height: height * 0.03,
           ),
           Expanded(
             child: TabBarView(controller: _tabController, children: [

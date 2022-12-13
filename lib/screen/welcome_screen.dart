@@ -19,6 +19,9 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
   final _formKey = GlobalKey<FormState>();
 
   final _fullNameController = TextEditingController();
+  RegExp regx =
+      RegExp(r'''[₹+×÷=/_€£¥₩;'`~\°•○●□■♤♡◇♧☆▪︎¤《》"¡¿!@#$%^&*(),.?:{}|<>]''');
+
   @override
   void initState() {
     filterFunction();
@@ -84,9 +87,10 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Full name should not be empty';
-                        } else {
-                          return null;
+                        } else if(value.startsWith(regx)){
+                          return 'User name should not start with any special characters';  
                         }
+                        return null;
                       },
                       decoration: InputDecoration(
                         hintText: 'Enter Full name',

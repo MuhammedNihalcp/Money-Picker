@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:money_app/db_function/user_name_db.dart';
+import 'package:money_app/screen/navigator.dart';
 
 class EditUserName {
   final formkey = GlobalKey<FormState>();
@@ -54,8 +55,9 @@ class EditUserName {
                   if (formkey.currentState!.validate()) {
                     UserNameDB.instance.userNameNotifier.value
                         .updateusername(usernamecontroller.text.trim());
+
+                    Get.offAll(() => const ScreenNavigator());
                     UserNameDB.instance.getUserName();
-                    Get.back();
                     Get.snackbar(
                       '',
                       'username updated succefully  ✓',

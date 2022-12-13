@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_cards/flutter_custom_cards.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -22,6 +24,7 @@ class ScreenTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log('build trasaction',name: 'trasaction screen');
     double height = MediaQuery.of(context).size.height;
     double widht = MediaQuery.of(context).size.width;
     return Scaffold(
