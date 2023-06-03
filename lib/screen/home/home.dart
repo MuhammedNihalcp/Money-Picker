@@ -52,29 +52,33 @@ class _ScreenHomeState extends State<ScreenHome> {
         preferredSize: const Size.fromHeight(100.0),
         child: AppBar(
           leadingWidth: 1000,
-          leading: Column(
-            children: [
-              const Text(
-                'Welcome,',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  eun.editUserName(context, 'change your name');
-                },
-                child: Text(
-                  UserNameDB.instance.userNameNotifier.value.username,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 213, 213, 213),
-                    fontSize: 18,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 10,top: 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Welcome,',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-            ],
+                GestureDetector(
+                  onTap: () {
+                    eun.editUserName(context, 'change your name');
+                  },
+                  child: Text(
+                    UserNameDB.instance.userNameNotifier.value.username,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 213, 213, 213),
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           automaticallyImplyLeading: false,
           elevation: 0,
@@ -240,86 +244,91 @@ class _ScreenHomeState extends State<ScreenHome> {
                                 ),
                               ],
                             )
-                          : ListView.separated(
-                            padding: EdgeInsets.zero,
-                              itemBuilder: (ctx, index) {
-                                final data =
-                                    transactionController.homeList[index];
-                                return Slidable(
-                                  startActionPane: ActionPane(
-                                      motion: const DrawerMotion(),
-                                      children: [
-                                        SlidableAction(
-                                          backgroundColor: Colors.transparent,
-                                          foregroundColor: Colors.black,
-                                          onPressed: (ctx) {
-                                            tD.showTransactionDelete(
-                                                context, data);
-                                          },
-                                          icon: Icons.delete,
-                                          label: 'delete',
-                                        )
-                                      ]),
-                                  key: Key(data.id!),
-                                  child: CustomCard(
-                                    borderRadius: 100,
-                                    child: ListTile(
-                                      leading: data.type == CategoryType.income
-                                          ? const Icon(
-                                              Icons.arrow_circle_up_outlined,
-                                              color: Colors.black,
-                                              size: 35,
-                                            )
-                                          : const Icon(
-                                              Icons.arrow_circle_down_outlined,
-                                              color: Colors.black,
-                                              size: 35,
-                                            ),
-                                      title: Text(data.catagory.name),
-                                      subtitle: Text(
-                                        data.type.name,
-                                        style: TextStyle(
-                                          color:
-                                              data.type == CategoryType.income
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                        ),
-                                      ),
-                                      trailing: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '₹ ${data.amount.toString()}',
-                                              style: TextStyle(
-                                                color: data.type ==
-                                                        CategoryType.income
+                          : SizedBox(
+                              child: ListView.separated(
+                                padding: EdgeInsets.zero,
+                                itemBuilder: (ctx, index) {
+                                  final data =
+                                      transactionController.homeList[index];
+                                  return Slidable(
+                                    startActionPane: ActionPane(
+                                        motion: const DrawerMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            backgroundColor: Colors.transparent,
+                                            foregroundColor: Colors.black,
+                                            onPressed: (ctx) {
+                                              tD.showTransactionDelete(
+                                                  context, data);
+                                            },
+                                            icon: Icons.delete,
+                                            label: 'delete',
+                                          )
+                                        ]),
+                                    key: Key(data.id!),
+                                    child: CustomCard(
+                                      borderRadius: 100,
+                                      child: ListTile(
+                                        leading: data.type ==
+                                                CategoryType.income
+                                            ? const Icon(
+                                                Icons.arrow_circle_up_outlined,
+                                                color: Colors.black,
+                                                size: 35,
+                                              )
+                                            : const Icon(
+                                                Icons
+                                                    .arrow_circle_down_outlined,
+                                                color: Colors.black,
+                                                size: 35,
+                                              ),
+                                        title: Text(data.catagory.name),
+                                        subtitle: Text(
+                                          data.type.name,
+                                          style: TextStyle(
+                                            color:
+                                                data.type == CategoryType.income
                                                     ? Colors.green
                                                     : Colors.red,
+                                          ),
+                                        ),
+                                        trailing: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '₹ ${data.amount.toString()}',
+                                                style: TextStyle(
+                                                  color: data.type ==
+                                                          CategoryType.income
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: height * 0.01,
-                                            ),
-                                            Text(parseDate(data.date))
-                                          ],
+                                              SizedBox(
+                                                height: height * 0.01,
+                                              ),
+                                              Text(parseDate(data.date))
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (ctx, index) {
-                                return SizedBox(
-                                  height: height * 0.02,
-                                );
-                              },
-                              itemCount: transactionController.homeList.length,
+                                  );
+                                },
+                                separatorBuilder: (ctx, index) {
+                                  return SizedBox(
+                                    height: height * 0.01,
+                                  );
+                                },
+                                itemCount:
+                                    transactionController.homeList.length,
+                              ),
                             ),
                     ),
                   ),
