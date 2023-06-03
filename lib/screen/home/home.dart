@@ -241,6 +241,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                               ],
                             )
                           : ListView.separated(
+                            padding: EdgeInsets.zero,
                               itemBuilder: (ctx, index) {
                                 final data =
                                     transactionController.homeList[index];
