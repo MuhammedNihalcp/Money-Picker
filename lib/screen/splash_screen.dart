@@ -54,7 +54,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
             SizedBox(
               height: height * 0.35,
             ),
-            const Text('version 1.0.0'),
+            const Text('version 1.2.0'),
           ],
         ),
       ),
