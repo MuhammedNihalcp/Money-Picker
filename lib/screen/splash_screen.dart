@@ -52,7 +52,7 @@ class _ScreenSplashState extends State<ScreenSplash> {
               height: 80,
             ),
             const Spacer(),
-            const Text('version 1.2.0'),
+            const Text('version 1.2.1'),
             const SizedBox(
               height: 10,
             ),
